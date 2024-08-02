@@ -12,6 +12,13 @@ impl Vec3 {
         Vec3 { x, y, z }
     }
 
+    pub fn reciprocal(&self) -> Vec3 {
+        Vec3 {
+            x: if self.x != 0.0 { 1.0 / self.x } else { f32::INFINITY },
+            y: if self.y != 0.0 { 1.0 / self.y } else { f32::INFINITY },
+            z: if self.z != 0.0 { 1.0 / self.z } else { f32::INFINITY },
+        }
+    }
     pub fn zero() -> Vec3 {
         Vec3 {
             x: 0f32,

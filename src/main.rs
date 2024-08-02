@@ -16,6 +16,7 @@ use raytracer::color::Color;
 use raytracer::point_light::PointLight;
 use raytracer::scene::Scene;
 use raytracer::sphere::Sphere;
+use raytracer::cube::Cube;
 use raytracer::textured_sphere::TexturedSphere;
 use raytracer::vec3::Vec3;
 use std::sync::mpsc::channel;
@@ -25,7 +26,7 @@ use std::time::Instant;
 const WIDTH: usize = 880;
 const HEIGHT: usize = 800;
 const BOX_SIDE: usize = 96;
-const MAX_ITERATION: u32 = 5;
+const MAX_ITERATION: u32 = 3;
 const RAY_PER_PIXEL: u32 = 200;
 const RANDOM_OFFSET_COUNT: usize = RAY_PER_PIXEL as usize * 100;
 
@@ -44,13 +45,13 @@ fn main() {
         panic!("{}", e);
     });
 
-    let origin = Vec3::new(0.0, 0.5, 0.0);
+    let origin = Vec3::new(0.0, 0.5, 1.0);
     let lookat = Vec3::new(0.0, 0.5, -1.0);
 
     let camera = Arc::new(Camera::new(
         origin,
         lookat,
-        Vec3::new(0.0, 1.0, 0.0),
+        Vec3::new(0.0, 0.5, 3.5),
         WIDTH as f32 / HEIGHT as f32,
         90.0,
         0.05,
@@ -112,9 +113,9 @@ fn main() {
     )));
 
     // Middle - Yellow
-    scene.add_object(Box::new(Sphere::new(
+    scene.add_object(Box::new(Cube::new(
         Vec3::new(0.0, 0.75, -2.5),
-        0.75,
+        Vec3::new(0.75, 0.75, 0.75), // demi-taille du cube
         Color {
             r: 1.0,
             g: 1.0,
@@ -123,6 +124,7 @@ fn main() {
         0.5,
         0.0,
     )));
+
 
     // Right - Red
     scene.add_object(Box::new(Sphere::new(
