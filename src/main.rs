@@ -288,9 +288,9 @@ fn save_buffer_as_ppm(buffer: &Vec<u32>, width: usize, height: usize, output_pat
 
     // Écrire les données de l'image
     for &pixel in buffer.iter() {
-        let red = ((pixel >> 24) & 0xFF) as u8;
-        let green = ((pixel >> 16) & 0xFF) as u8;
-        let blue = ((pixel >> 8) & 0xFF) as u8;
+        let red = ((pixel >> 16) & 0xFF) as u8;  // 16-bit shift pour le rouge
+        let green = ((pixel >> 8) & 0xFF) as u8; // 8-bit shift pour le vert
+        let blue = (pixel & 0xFF) as u8;         // pas de shift pour le bleu
         file.write_all(&[red, green, blue])?;
     }
 
