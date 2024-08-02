@@ -8,8 +8,7 @@ extern crate threadpool;
 
 use minifb::{Key, Window, WindowOptions};
 use std::fs::File;
-use std::io::BufWriter;
-use std::path::Path;
+use std::io::{self, Write};
 // To use encoder.set()
 use rand::Rng;
 use raytracer::camera::Camera;
@@ -267,7 +266,9 @@ fn main() {
 
                     println!("Rendering took {}s", duration.as_secs_f32());
 
-                    save_as_png("raytracer.png", WIDTH as u32, HEIGHT as u32, &screen_buffer);
+
+                    save_buffer_as_ppm(&screen_buffer, WIDTH, HEIGHT, "raytracer.ppm").unwrap();
+
                 }
             }
         }
@@ -276,29 +277,22 @@ fn main() {
     }
 }
 
-fn save_as_png(file_name: &str, width: u32, height: u32, buffer: &Vec<u32>) {
-    let path = Path::new(file_name);
-    let file = File::create(path).unwrap();
-    let w = &mut BufWriter::new(file);
+fn save_buffer_as_ppm(buffer: &Vec<u32>, width: usize, height: usize, output_path: &str) -> io::Result<()> {
+    // Ouvrir le fichier de sortie
+    let mut file = File::create(output_path)?;
 
-    let mut encoder = png::Encoder::new(w, width, height); // Width is 2 pixels and height is 1.
-    encoder.set_color(png::ColorType::RGB);
-    encoder.set_depth(png::BitDepth::Eight);
+    // Écrire l'en-tête PPM
+    writeln!(file, "P6")?;
+    writeln!(file, "{} {}", width, height)?;
+    writeln!(file, "255")?;
 
-    let mut writer = encoder.write_header().unwrap();
-
-    let mut png_data = vec![0u8; 0];
-    png_data.reserve_exact((width * height * 3) as usize);
-
-    for value in buffer.iter() {
-        let r = ((value & 0x00FF_0000) >> 16) as u8;
-        let g = ((value & 0x0000_FF00) >> 8) as u8;
-        let b = ((value & 0x0000_00FF) >> 0) as u8;
-
-        png_data.push(r);
-        png_data.push(g);
-        png_data.push(b);
+    // Écrire les données de l'image
+    for &pixel in buffer.iter() {
+        let red = ((pixel >> 24) & 0xFF) as u8;
+        let green = ((pixel >> 16) & 0xFF) as u8;
+        let blue = ((pixel >> 8) & 0xFF) as u8;
+        file.write_all(&[red, green, blue])?;
     }
 
-    writer.write_image_data(&png_data).unwrap(); // Save
+    Ok(())
 }

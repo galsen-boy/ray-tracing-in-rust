@@ -4,7 +4,6 @@ use super::light::Light;
 use super::ray::Ray;
 use super::vec3::Vec3;
 use rand::Rng;
-use std::mem;
 
 pub struct Scene {
     lights: Vec<Box<dyn Light>>,
@@ -50,27 +49,6 @@ fn schlick(cosine: f32, refractive_index: f32) -> f32 {
     r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
 }
 
-fn fresnel(i: &Vec3, n: &Vec3, refractive_index: f32) -> f32 {
-    let mut cosi = Vec3::dot_product(i, n).max(-1.0).min(1.0);
-    let mut etai = 1.0;
-    let mut etat = refractive_index;
-
-    if cosi > 0.0 {
-        mem::swap(&mut etai, &mut etat);
-    }
-
-    let sint = etai / etat * ((1.0 - cosi * cosi).max(0.0)).sqrt();
-    if sint >= 1.0 {
-        1.0
-    } else {
-        let cost = ((1.0 - sint * sint).max(0.0)).sqrt();
-        cosi = cosi.abs();
-        let rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
-        let rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
-
-        (rs * rs + rp * rp) / 2.0
-    }
-}
 
 impl Scene {
     pub fn new() -> Scene {
