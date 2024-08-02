@@ -31,11 +31,12 @@ impl Vec3 {
         self.squared_length().sqrt()
     }
 
-    pub fn normalize(&mut self) {
+    pub fn normalize(&mut self) -> Vec3 {
         let length = self.length();
         self.x /= length;
         self.y /= length;
         self.z /= length;
+        return *self;
     }
 
     pub fn normalize_out_length(&mut self, length: &mut f32) {

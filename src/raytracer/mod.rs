@@ -11,3 +11,4 @@ pub mod spot_light;
 pub mod textured_sphere;
 pub mod vec3;
 pub mod cube;
+pub mod cylinder;

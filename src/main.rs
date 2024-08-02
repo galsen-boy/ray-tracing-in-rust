@@ -16,6 +16,7 @@ use raytracer::color::Color;
 use raytracer::point_light::PointLight;
 use raytracer::scene::Scene;
 use raytracer::sphere::Sphere;
+use raytracer::cylinder::Cylinder;
 use raytracer::cube::Cube;
 use raytracer::textured_sphere::TexturedSphere;
 use raytracer::vec3::Vec3;
@@ -127,9 +128,10 @@ fn main() {
 
 
     // Right - Red
-    scene.add_object(Box::new(Sphere::new(
+    scene.add_object(Box::new(Cylinder::new(
         Vec3::new(1.5, 0.5, -1.0),
         0.5,
+        1.0,
         Color {
             r: 1.0,
             g: 0.0,
