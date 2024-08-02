@@ -131,7 +131,7 @@ fn main() {
     scene.add_object(Box::new(Cylinder::new(
         Vec3::new(1.5, 0.5, -1.0),
         0.5,
-        1.0,
+        1.5,
         Color {
             r: 1.0,
             g: 0.0,
